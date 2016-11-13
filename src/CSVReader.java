@@ -22,10 +22,10 @@ public class CSVReader {
 				String[] data = line.split(cvsSplitBy);
 				//count all females born in 2015
 				if(data[0].equals("2015")&&data[2].equals("\"W\"")){
-					counterFemale++;
+					counterFemale = counterFemale + Integer.parseInt(data[7]);
 				//count all males born in 2015
 				}else if(data[0].equals("2015")&&data[2].equals("\"M\"")){
-					counterMale++;
+					counterMale = counterMale + Integer.parseInt(data[7]);
 				}
 			}
 
