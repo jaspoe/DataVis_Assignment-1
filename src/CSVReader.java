@@ -93,8 +93,8 @@ public class CSVReader {
 							counterFemale = Integer.parseInt(data[7]);
 							returnData.get(counterArea).counterFemale = returnData.get(counterArea).counterFemale + counterFemale;
 						}
-						System.out.println("area: " + returnData.get(counterArea).area + " male: " + returnData.get(counterArea).counterMale
-								+ " female: " + returnData.get(counterArea).counterFemale);
+//						System.out.println("area: " + returnData.get(counterArea).area + " male: " + returnData.get(counterArea).counterMale
+//								+ " female: " + returnData.get(counterArea).counterFemale);
 					}
 				}
 

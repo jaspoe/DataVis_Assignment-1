@@ -9,6 +9,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.LegendItem;
 import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.SubCategoryAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -50,6 +51,9 @@ public class Plot1 extends ApplicationFrame {
         	result.addValue(data.get(i).counterMale, "Male", data.get(i).area);
         	//add female births'
         	result.addValue(data.get(i).counterFemale, "Female", data.get(i).area);
+        	System.out.println("Area: " + data.get(i).area
+        						+ " Male: " + data.get(i).counterMale 
+        						+ " Female: " + data.get(i).counterFemale);
         }
         
         return result;
@@ -77,27 +81,18 @@ public class Plot1 extends ApplicationFrame {
         
         GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
         KeyToGroupMap map = new KeyToGroupMap("G1");
-        map.mapKeyToGroup("Product 1 (US)", "G1");
-        map.mapKeyToGroup("Product 1 (Europe)", "G1");
-        map.mapKeyToGroup("Product 1 (Asia)", "G1");
-        map.mapKeyToGroup("Product 1 (Middle East)", "G1");
-        map.mapKeyToGroup("Product 2 (US)", "G2");
-        map.mapKeyToGroup("Product 2 (Europe)", "G2");
-        map.mapKeyToGroup("Product 2 (Asia)", "G2");
-        map.mapKeyToGroup("Product 2 (Middle East)", "G2");
-        map.mapKeyToGroup("Product 3 (US)", "G3");
-        map.mapKeyToGroup("Product 3 (Europe)", "G3");
-        map.mapKeyToGroup("Product 3 (Asia)", "G3");
-        map.mapKeyToGroup("Product 3 (Middle East)", "G3");
+        map.mapKeyToGroup("Female", "G1");
+        map.mapKeyToGroup("Male", "G1");
         renderer.setSeriesToGroupMap(map); 
         
         
         
         SubCategoryAxis domainAxis = new SubCategoryAxis("Zurich areas");
         domainAxis.setCategoryMargin(0.05);
-        domainAxis.addSubCategory("Product 1");
-        domainAxis.addSubCategory("Product 2");
-        domainAxis.addSubCategory("Product 3");
+        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+//        domainAxis.addSubCategory("Product 1");
+//        domainAxis.addSubCategory("Product 2");
+//        domainAxis.addSubCategory("Product 3");
         
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
         plot.setDomainAxis(domainAxis);
