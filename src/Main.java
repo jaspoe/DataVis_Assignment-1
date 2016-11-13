@@ -13,10 +13,12 @@ public class Main {
 		
 		
 		//Create Plot 2
-//		Plot2 plot2 = new Plot2("Comparison", "Which operating system are you using?");
-//        plot2.pack();
-//        plot2.setVisible(true);
-//        
+		Plot2 plot2 = new Plot2("Plot 2", "Plot 2");
+        plot2.pack();
+        plot2.setVisible(true);
+        
+        
+        //DEMOCODE
 //        final StackedBarChartDemo4 demo = new StackedBarChartDemo4("Stacked Bar Chart Demo 4");
 //        demo.pack();
 //        RefineryUtilities.centerFrameOnScreen(demo);

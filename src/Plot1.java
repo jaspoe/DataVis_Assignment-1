@@ -51,9 +51,9 @@ public class Plot1 extends ApplicationFrame {
         	result.addValue(data.get(i).counterMale, "Male", data.get(i).area);
         	//add female births'
         	result.addValue(data.get(i).counterFemale, "Female", data.get(i).area);
-        	System.out.println("Area: " + data.get(i).area
-        						+ " Male: " + data.get(i).counterMale 
-        						+ " Female: " + data.get(i).counterFemale);
+        	//System.out.println("Area: " + data.get(i).area
+        	//					+ " Male: " + data.get(i).counterMale 
+        	//					+ " Female: " + data.get(i).counterFemale);
         }
         
         return result;
@@ -111,14 +111,11 @@ public class Plot1 extends ApplicationFrame {
      */
     private LegendItemCollection createLegendItems() {
         LegendItemCollection result = new LegendItemCollection();
-//        LegendItem item1 = new LegendItem("US", new Color(0x22, 0x22, 0xFF));
-  //      LegendItem item2 = new LegendItem("Europe", new Color(0x22, 0xFF, 0x22));
-    //    LegendItem item3 = new LegendItem("Asia", new Color(0xFF, 0x22, 0x22));
-      //  LegendItem item4 = new LegendItem("Middle East", new Color(0xFF, 0xFF, 0x22));
-//        result.add(item1);
-  //      result.add(item2);
-    //    result.add(item3);
-      //  result.add(item4);
+
+        LegendItem item1 = new LegendItem("Male", new Color(0xCC,0x00,0x00));
+        LegendItem item2 = new LegendItem ("Female", new Color(0x00, 0x66, 0xFF));
+        result.add(item1);
+        result.add(item2);
         return result;
     }
 

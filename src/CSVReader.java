@@ -35,9 +35,9 @@ public class CSVReader {
 		
 		//return the male and female counters
 		counter[0] = counterMale;
-		System.out.println("CSV plot 2 male: " + counter[0]);
+		//System.out.println("CSV plot 2 male: " + counter[0]);
 		counter[1] = counterFemale;
-		System.out.println("CSV plot 2 female: " + counter[1]);
+		//System.out.println("CSV plot 2 female: " + counter[1]);
 		return counter;
 	}
 
