@@ -20,7 +20,7 @@ public class Plot2 extends JFrame {
         super(applicationTitle);
         //get the data for the dataset
         int[] data = reader.dataGenPlot2();
-        System.out.println("Male: " + data[0] + " Female: " + data[1]);
+        //System.out.println("Male: " + data[0] + " Female: " + data[1]);
         // This will create the dataset
         PieDataset dataset = createDataset(data);
         // based on the dataset we create the chart

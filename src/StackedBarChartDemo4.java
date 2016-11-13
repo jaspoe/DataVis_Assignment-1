@@ -1,8 +1,7 @@
+
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Paint;
-import java.sql.ResultSetMetaData;
-import java.util.ArrayList;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -21,13 +20,18 @@ import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.RefineryUtilities;
 import org.jfree.ui.StandardGradientPaintTransformer;
 
+/**
+ * A simple demonstration application showing how to create a stacked bar chart
+ * using data from a {@link CategoryDataset}.
+ */
+public class StackedBarChartDemo4 extends ApplicationFrame {
 
-public class Plot1 extends ApplicationFrame {
-	private static final long serialVersionUID = 1L;
-	CSVReader reader = new CSVReader();
-	
-	
-    public Plot1(final String title) {
+    /**
+     * Creates a new demo.
+     *
+     * @param title  the frame title.
+     */
+    public StackedBarChartDemo4(final String title) {
         super(title);
         final CategoryDataset dataset = createDataset();
         final JFreeChart chart = createChart(dataset);
@@ -43,14 +47,45 @@ public class Plot1 extends ApplicationFrame {
      */
     private CategoryDataset createDataset() {
         DefaultCategoryDataset result = new DefaultCategoryDataset();
-        //result.addValue(10.1, "Product 3 (Middle East)", "Mar 04");
-        ArrayList<Plot1DataObject> data = reader.dataGenPlot1();
-        for(int i = 0; i < data.size(); i++){
-        	//add male births'
-        	result.addValue(data.get(i).counterMale, "Male", data.get(i).area);
-        	//add female births'
-        	result.addValue(data.get(i).counterFemale, "Female", data.get(i).area);
-        }
+
+        result.addValue(20.3, "Product 1 (US)", "Jan 04");
+        result.addValue(27.2, "Product 1 (US)", "Feb 04");
+        result.addValue(19.7, "Product 1 (US)", "Mar 04");
+        result.addValue(19.4, "Product 1 (Europe)", "Jan 04");
+        result.addValue(10.9, "Product 1 (Europe)", "Feb 04");
+        result.addValue(18.4, "Product 1 (Europe)", "Mar 04");
+        result.addValue(16.5, "Product 1 (Asia)", "Jan 04");
+        result.addValue(15.9, "Product 1 (Asia)", "Feb 04");
+        result.addValue(16.1, "Product 1 (Asia)", "Mar 04");
+        result.addValue(13.2, "Product 1 (Middle East)", "Jan 04");
+        result.addValue(14.4, "Product 1 (Middle East)", "Feb 04");
+        result.addValue(13.7, "Product 1 (Middle East)", "Mar 04");
+
+        result.addValue(23.3, "Product 2 (US)", "Jan 04");
+        result.addValue(16.2, "Product 2 (US)", "Feb 04");
+        result.addValue(28.7, "Product 2 (US)", "Mar 04");
+        result.addValue(12.7, "Product 2 (Europe)", "Jan 04");
+        result.addValue(17.9, "Product 2 (Europe)", "Feb 04");
+        result.addValue(12.6, "Product 2 (Europe)", "Mar 04");
+        result.addValue(15.4, "Product 2 (Asia)", "Jan 04");
+        result.addValue(21.0, "Product 2 (Asia)", "Feb 04");
+        result.addValue(11.1, "Product 2 (Asia)", "Mar 04");
+        result.addValue(23.8, "Product 2 (Middle East)", "Jan 04");
+        result.addValue(23.4, "Product 2 (Middle East)", "Feb 04");
+        result.addValue(19.3, "Product 2 (Middle East)", "Mar 04");
+
+        result.addValue(11.9, "Product 3 (US)", "Jan 04");
+        result.addValue(31.0, "Product 3 (US)", "Feb 04");
+        result.addValue(22.7, "Product 3 (US)", "Mar 04");
+        result.addValue(15.3, "Product 3 (Europe)", "Jan 04");
+        result.addValue(14.4, "Product 3 (Europe)", "Feb 04");
+        result.addValue(25.3, "Product 3 (Europe)", "Mar 04");
+        result.addValue(23.9, "Product 3 (Asia)", "Jan 04");
+        result.addValue(19.0, "Product 3 (Asia)", "Feb 04");
+        result.addValue(10.1, "Product 3 (Asia)", "Mar 04");
+        result.addValue(13.2, "Product 3 (Middle East)", "Jan 04");
+        result.addValue(15.5, "Product 3 (Middle East)", "Feb 04");
+        result.addValue(10.1, "Product 3 (Middle East)", "Mar 04");
         
         return result;
     }
@@ -65,9 +100,9 @@ public class Plot1 extends ApplicationFrame {
     private JFreeChart createChart(final CategoryDataset dataset) {
 
         final JFreeChart chart = ChartFactory.createStackedBarChart(
-            "Plot 1",  					 // chart title
-            "Category",	                 // domain axis label
-            "Number of births",          // range axis label
+            "Stacked Bar Chart Demo 4",  // chart title
+            "Category",                  // domain axis label
+            "Value",                     // range axis label
             dataset,                     // data
             PlotOrientation.VERTICAL,    // the plot orientation
             true,                        // legend
@@ -93,7 +128,7 @@ public class Plot1 extends ApplicationFrame {
         
         
         
-        SubCategoryAxis domainAxis = new SubCategoryAxis("Zurich areas");
+        SubCategoryAxis domainAxis = new SubCategoryAxis("Product / Month");
         domainAxis.setCategoryMargin(0.05);
         domainAxis.addSubCategory("Product 1");
         domainAxis.addSubCategory("Product 2");
@@ -116,15 +151,14 @@ public class Plot1 extends ApplicationFrame {
      */
     private LegendItemCollection createLegendItems() {
         LegendItemCollection result = new LegendItemCollection();
-//        LegendItem item1 = new LegendItem("US", new Color(0x22, 0x22, 0xFF));
-  //      LegendItem item2 = new LegendItem("Europe", new Color(0x22, 0xFF, 0x22));
-    //    LegendItem item3 = new LegendItem("Asia", new Color(0xFF, 0x22, 0x22));
-      //  LegendItem item4 = new LegendItem("Middle East", new Color(0xFF, 0xFF, 0x22));
-//        result.add(item1);
-  //      result.add(item2);
-    //    result.add(item3);
-      //  result.add(item4);
+        LegendItem item1 = new LegendItem("US", new Color(0x22, 0x22, 0xFF));
+        LegendItem item2 = new LegendItem("Europe", new Color(0x22, 0xFF, 0x22));
+        LegendItem item3 = new LegendItem("Asia", new Color(0xFF, 0x22, 0x22));
+        LegendItem item4 = new LegendItem("Middle East", new Color(0xFF, 0xFF, 0x22));
+        result.add(item1);
+        result.add(item2);
+        result.add(item3);
+        result.add(item4);
         return result;
     }
-
 }
