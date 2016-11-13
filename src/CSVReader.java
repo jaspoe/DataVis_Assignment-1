@@ -78,6 +78,21 @@ public class CSVReader {
 						}
 						Plot1DataObject addArea = new Plot1DataObject(area, counterMale, counterFemale);
 						returnData.add(addArea);
+
+					}
+					
+				//add births' to already existing areas
+					else{
+						//add all male births'
+						if(data[2].equals("\"M\"")){
+							counterMale = Integer.parseInt(data[7]);
+							returnData.get(counterArea).counterMale = returnData.get(counterArea).counterMale + counterMale;
+						}
+						//add all female births'
+						else{
+							counterFemale = Integer.parseInt(data[7]);
+							returnData.get(counterArea).counterFemale = returnData.get(counterArea).counterFemale + counterFemale;
+						}
 						System.out.println("area: " + returnData.get(counterArea).area + " male: " + returnData.get(counterArea).counterMale
 								+ " female: " + returnData.get(counterArea).counterFemale);
 					}
