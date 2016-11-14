@@ -296,7 +296,7 @@ public class TabChart {
 
 	private ChartPanel createPlot1(int gender){
 		JFreeChart chart1 = ChartFactory.createStackedBarChart(
-				"Plot 1", 						//chart title
+				"Plot 1 - Total number of births per area in 2015", 						//chart title
 				"Zurich Areas", 				//domain axis label x-axis
 				"Number of Births", 			//range axis label y-axis
 				createDatasetPlot1(gender), 	//data
@@ -319,7 +319,7 @@ public class TabChart {
 	}
 
 	private ChartPanel createPlot2() {
-		JFreeChart chart2 = ChartFactory.createPieChart("Plot 1", createDatasetPlot2());
+		JFreeChart chart2 = ChartFactory.createPieChart("Plot 2 - Total number of births in Zurich in 2015", createDatasetPlot2());
 
 		return new ChartPanel(chart2) {
 
@@ -344,7 +344,7 @@ public class TabChart {
 		}
 		
 		JFreeChart chart3 = ChartFactory.createStackedBarChart(
-				"Plot3", 							//chart title
+				"Plot 3 - Total number of births per area in a time interval", 							//chart title
 				"Year of Births",					//domain axis label, x-axis
 				"Number of Births",					//range axis label, y-axis
 				createDatasetPlot3(area, from, to), //data
