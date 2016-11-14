@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -42,17 +43,24 @@ public class TabChart {
 		jtp.add("Plot 1", createPlot1());
 		jtp.add("Plot 2", createPlot2());
 		f.add(jtp, BorderLayout.CENTER);
-		//        JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		//        p.add(new JButton(new AbstractAction("Add") {
-		//            @Override
-		//            public void actionPerformed(ActionEvent e) {
-		//                jtp.add(String.valueOf(++n), createPane());
-		//                jtp.setSelectedIndex(n - 1);
-		//            }
-		//        }));
-		//        f.add(p, BorderLayout.SOUTH);
+//		        JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+//		        p.add(new JButton(new AbstractAction("Add") {
+//		            @Override
+//		            public void actionPerformed(ActionEvent e) {
+//		                jtp.add(String.valueOf(++n), createPlot1());
+//		                jtp.setSelectedIndex(n - 1);
+//		            }
+//		        }));
+//		        f.add(p, BorderLayout.SOUTH);
 
-
+		JPanel test = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JCheckBox maleCheckbox = new JCheckBox("Male");
+		JCheckBox femaleCheckbox = new JCheckBox("Female");
+		test.add(createPlot1());
+		test.add(maleCheckbox);
+		test.add(femaleCheckbox);
+		
+		jtp.addTab("test", test);
 		f.pack();
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
