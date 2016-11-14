@@ -52,7 +52,7 @@ public class TabChart {
 	CSVReader reader = new CSVReader();
 
 	//variables for Plot3 User Selection
-	String plot3SelectedArea = "test";
+	String plot3SelectedArea = "\"Rathaus\"";
 	int plot3YearFrom = 1993;
 	int plot3YearTo = 2015;
 
@@ -153,35 +153,24 @@ public class TabChart {
 		 * 	create Action Listener
 		 * 	add to pane
 		 */
-		//TODO: check the input fields for correct inputs have to be int!
-		JTextField yearFromTextField = new JTextField();
-		yearFromTextField.setToolTipText("Start Year of Data Range");
-		yearFromTextField.setColumns(5);
-		yearFromTextField.getDocument().addDocumentListener(new DocumentListener(){
-			public void changedUpdate(DocumentEvent e){
-				updatePlot();
-			}
-			public void removeUpdate(DocumentEvent e){
-				updatePlot();
-			}
-			public void insertUpdate(DocumentEvent e){
-				updatePlot();
-			}
-			public void updatePlot(){
-				int year = Integer.parseInt(yearFromTextField.getText());
-				jPanel3.remove(3);
-				setPlot3YearFrom(year);
-				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
-				jPanel3.updateUI();
-				//System.out.println("If you have not selected a second year, then the To-year will be automatically set to 2015" );
-			}
-		});
-		jPanel3.add(yearFromTextField);
-
 		JTextField yearToTextField = new JTextField();
 		yearToTextField.setToolTipText("End Year of Data Range");
 		yearToTextField.setColumns(5);
-		yearToTextField.getDocument().addDocumentListener(new DocumentListener(){
+		
+		ActionListener yearToListener = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				int year = Integer.parseInt(yearToTextField.getText());
+				jPanel3.remove(3);
+				setPlot3YearTo(year);
+				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
+				jPanel3.updateUI();
+			}
+		};
+		yearToTextField.addActionListener(yearToListener);
+
+		/**This code updates the text field at every digit enter. takes way to long to calculate and leads to errors*/
+		/*yearToTextField.getDocument().addDocumentListener(new DocumentListener(){
 
 			public void changedUpdate(DocumentEvent e){
 				updatePlot();
@@ -200,8 +189,46 @@ public class TabChart {
 				jPanel3.updateUI();
 				//System.out.println("If you have not selected a second year, then the From-year will be automatically set to 1993" );
 			}
-		});
+		});*/
 		jPanel3.add(yearToTextField);
+
+		JTextField yearFromTextField = new JTextField();
+		yearFromTextField.setToolTipText("Start Year of Data Range");
+		yearFromTextField.setColumns(5);
+		ActionListener yearFromListener = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				int year = Integer.parseInt(yearFromTextField.getText());
+				jPanel3.remove(3);
+				setPlot3YearFrom(year);
+				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
+				jPanel3.updateUI();
+			}
+		};
+		yearFromTextField.addActionListener(yearFromListener);
+
+		/**This code updates the text field at every digit enter. takes way to long to calculate and leads to errors*/
+
+		/*yearFromTextField.getDocument().addDocumentListener(new DocumentListener(){
+			public void changedUpdate(DocumentEvent e){
+				updatePlot();
+			}
+			public void removeUpdate(DocumentEvent e){
+				updatePlot();
+			}
+			public void insertUpdate(DocumentEvent e){
+				updatePlot();
+			}
+			public void updatePlot(){
+				int year = Integer.parseInt(yearFromTextField.getText());
+				jPanel3.remove(3);
+				setPlot3YearFrom(year);
+				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
+				jPanel3.updateUI();
+				//System.out.println("If you have not selected a second year, then the To-year will be automatically set to 2015" );
+			}
+		});*/
+		jPanel3.add(yearFromTextField);
 
 		jPanel3.add(plot3);
 		jtp.add("Plot 3", jPanel3);
@@ -295,14 +322,27 @@ public class TabChart {
 		JFreeChart chart2 = ChartFactory.createPieChart("Plot 1", createDatasetPlot2());
 
 		return new ChartPanel(chart2) {
-			@Override
-			public Dimension getPreferredSize() {
-				return new Dimension(480, 240);
-			}
+
 		};
 	}
 
 	private ChartPanel createPlot3(String area, int from, int to){
+		if(from <1993 || from > 2015){
+			from = 1993;
+			System.out.println("The 'from'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 1993");
+		}
+		if(to < 1993 || to > 2015){
+			to = 2015;
+			System.out.println("The 'to'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 2015");
+		}
+		if(from > to){
+			int n;
+			n = from;
+			from = to;
+			to = n;
+			System.out.println("The first entered year has to be lower than the second one. Your chosen years have been reversed.");
+		}
+		
 		JFreeChart chart3 = ChartFactory.createStackedBarChart(
 				"Plot3", 							//chart title
 				"Year of Births",					//domain axis label, x-axis
@@ -358,18 +398,17 @@ public class TabChart {
 		double x = 0;
 		double y = 0;
 		double sum = 0;
+		int size = reader.dataGenPlot3(area, from, to).size();
 
-		for(int i = 0; i< reader.dataGenPlot3(area, from, to).size(); i++){
+		for(int i = 0; i< size; i++){
 			x = reader.dataGenPlot3(area, from, to).get(i).counterFemale
 					+ reader.dataGenPlot3(area, from, to).get(i).counterMale;
 			y = x - mean;
-			System.out.println(x + " - " + mean + " = " + y);
 			y = Math.abs(y);
 			y = Math.pow(y, 2);
 			sum = sum + y;
 		}
 		stdDev = sum/reader.dataGenPlot3(area, from, to).size();
-		System.out.println("Standard Deviation: " + stdDev);
 		stdDev = Math.sqrt(stdDev);
 		return stdDev;
 	}
@@ -377,13 +416,16 @@ public class TabChart {
 	private double calculateMedian(String area, int from, int to){
 		double median = 0;
 		int counter = 0;
+		int size = reader.dataGenPlot3(area, from, to).size();
 
-		for(int i = 0; i < reader.dataGenPlot3(area, from, to).size(); i++){
+		for(int i = 0; i < size; i++){
 			counter = counter + reader.dataGenPlot3(area, from, to).get(i).counterFemale
 					+ reader.dataGenPlot3(area, from, to).get(i).counterMale;
 		}
-
-		median = counter / reader.dataGenPlot3(area, from, to).size();
+		if(size == 0){
+			size = 1;
+		}
+		median = counter / size;
 
 
 		return median;

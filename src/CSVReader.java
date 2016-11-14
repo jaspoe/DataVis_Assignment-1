@@ -119,21 +119,21 @@ public class CSVReader {
 		//		apo.concat(area);
 		//		area = apo;
 
-		if(from <1993 || from > 2015){
-			from = 1993;
-			//System.out.println("The 'from'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 1993");
-		}
-		if(to > 2015 || to < 1993){
-			to = 2015;
-			//System.out.println("The 'to'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 2015");
-		}
-		if(from > to){
-			int n;
-			n = from;
-			from = to;
-			to = n;
-			//System.out.println("The first entered year has to be lower than the second one. Your chosen years have been reversed.");
-		}
+//		if(from <1993 || from > 2015){
+//			from = 1993;
+//			System.out.println("The 'from'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 1993");
+//		}
+//		if(to > 2015 || to < 1993){
+//			to = 2015;
+//			System.out.println("The 'to'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 2015");
+//		}
+//		if(from > to){
+//			int n;
+//			n = from;
+//			from = to;
+//			to = n;
+//			System.out.println("The first entered year has to be lower than the second one. Your chosen years have been reversed.");
+//		}
 		
 
 		ArrayList<ChartDataObject> returnData = new ArrayList<ChartDataObject>();
