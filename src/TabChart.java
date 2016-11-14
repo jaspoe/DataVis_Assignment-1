@@ -135,12 +135,6 @@ public class TabChart {
 				true,							//tooltips
 				false							//urls
 				);
-			
-		GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
-        KeyToGroupMap map = new KeyToGroupMap("G1");
-        map.mapKeyToGroup("Female", "G1");
-        map.mapKeyToGroup("Male", "G1");
-        renderer.setSeriesToGroupMap(map);
 		
 		SubCategoryAxis domainAxis = new SubCategoryAxis("Zurich Area");
         domainAxis.setCategoryMargin(0.3);
@@ -148,7 +142,6 @@ public class TabChart {
         
         CategoryPlot plot = (CategoryPlot) chart1.getPlot();
         plot.setDomainAxis(domainAxis);
-        plot.setRenderer(renderer);
 
 		return new ChartPanel(chart1){
 //			@Override
