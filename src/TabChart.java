@@ -1,27 +1,18 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Random;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -32,23 +23,14 @@ import org.jfree.chart.axis.SubCategoryAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
-import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
-import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
-
-/**
- * @see http://stackoverflow.com/a/15715096/230513
- * @see http://stackoverflow.com/a/11949899/230513
- */
 public class TabChart {
 
-	private static final int N = 128;
-	private static final Random random = new Random();
-	private int n = 1;
+	//initiate variables
 	CSVReader reader = new CSVReader();
 
 	//variables for Plot3 User Selection
@@ -56,6 +38,7 @@ public class TabChart {
 	int plot3YearFrom = 1993;
 	int plot3YearTo = 2015;
 
+	//getters and setters for Plot3 User Selection
 	public String getPlot3SelectedArea() {
 		return plot3SelectedArea;
 	}
@@ -80,16 +63,17 @@ public class TabChart {
 		this.plot3YearTo = plot3YearTo;
 	}
 
-
-	// setters and getters for varialbe Plot3 User Selection
-
+	//create the GUI
 	private void display() {
+		//create main window
 		JFrame f = new JFrame("TabChart");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		final JTabbedPane jtp = new JTabbedPane();
 
+		//create Panel 1 and add Plot 1
 		JPanel jPanel1 = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		ChartPanel plot1 = createPlot1(0);
+		//add Buttons for gender selection
 		jPanel1.add(new JButton(new AbstractAction("Female"){
 			@Override
 			public void actionPerformed(ActionEvent e){
@@ -118,14 +102,15 @@ public class TabChart {
 		jPanel1.add(plot1);	
 		jtp.addTab("Plot 1", jPanel1);
 
-
+		//create Panel 1 and add Plot 2
 		jtp.add("Plot 2", createPlot2());
 		f.add(jtp, BorderLayout.CENTER);
 
+		//create Panel 3 and add Plot 3
 		JPanel jPanel3 = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		ChartPanel plot3 = createPlot3("\"Rathaus\"", 1993, 2015);
 
-		/** create Dropdown Menu
+		/*  create Dropdown Menu
 		 * 	populate Menu
 		 * 	create Action Listener
 		 * 	add to pane
@@ -143,18 +128,17 @@ public class TabChart {
 				setPlot3SelectedArea((String) comboBox.getSelectedItem());
 				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
 				jPanel3.updateUI();
-				//System.out.println("If you have not selected any year range, then the range of 1993 to 2015 will be automatically selected.");
 			}
 		};
 		comboBox.addActionListener(comboBoxListener);
 		jPanel3.add(comboBox);
 
-		/** create From  And To TextBox
+		/*  create From  And To TextBox
 		 * 	create Action Listener
 		 * 	add to pane
 		 */
 		JTextField yearToTextField = new JTextField();
-		yearToTextField.setToolTipText("End Year of Data Range");
+		yearToTextField.setToolTipText("Start Year of Data Range - bigger number");
 		yearToTextField.setColumns(5);
 		
 		ActionListener yearToListener = new ActionListener(){
@@ -193,7 +177,7 @@ public class TabChart {
 		jPanel3.add(yearToTextField);
 
 		JTextField yearFromTextField = new JTextField();
-		yearFromTextField.setToolTipText("Start Year of Data Range");
+		yearFromTextField.setToolTipText("End Year of Data Range - smaller number");
 		yearFromTextField.setColumns(5);
 		ActionListener yearFromListener = new ActionListener(){
 			@Override
@@ -232,26 +216,24 @@ public class TabChart {
 
 		jPanel3.add(plot3);
 		jtp.add("Plot 3", jPanel3);
-
+		
+		//finish the GUI
 		f.pack();
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
 	}
 
-
+	//create Datasets for the different Plots and menus
 	private CategoryDataset createDatasetPlot1(int gender){
 		CSVReader reader = new CSVReader();
 		ArrayList<ChartDataObject> data = reader.dataGenPlot1();
 		DefaultCategoryDataset result = new DefaultCategoryDataset();
 
+		//differentiate between the gender selected by the user: 0--> both, 1 --> male, 2 --> female
 		if(gender == 0){
 			for(int i = 0; i < data.size(); i++){
 				//add male births'
 				result.addValue(data.get(i).counterMale, "Male", data.get(i).area);
-				//				System.out.println("Area: " + data.get(i).area
-				//	        						+ " Male: " + data.get(i).counterMale 
-				//	        						+ " Female: " + data.get(i).counterFemale);
-				//add female births'
 				result.addValue(data.get(i).counterFemale, "Female", data.get(i).area);
 			}
 			return result;
@@ -294,7 +276,9 @@ public class TabChart {
 		return result;
 	}
 
+	//create the different plots
 	private ChartPanel createPlot1(int gender){
+		//create Plot 1
 		JFreeChart chart1 = ChartFactory.createStackedBarChart(
 				"Plot 1 - Total number of births per area in 2015", 						//chart title
 				"Zurich Areas", 				//domain axis label x-axis
@@ -306,6 +290,8 @@ public class TabChart {
 				false							//urls
 				);
 
+		
+		//create subcategory axis for areas
 		SubCategoryAxis domainAxis = new SubCategoryAxis("Zurich Area");
 		domainAxis.setCategoryMargin(0.3);
 		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
@@ -313,20 +299,19 @@ public class TabChart {
 		CategoryPlot plot = (CategoryPlot) chart1.getPlot();
 		plot.setDomainAxis(domainAxis);
 
-		return new ChartPanel(chart1){
-
-		};
+		return new ChartPanel(chart1){};
 	}
 
 	private ChartPanel createPlot2() {
+		//create Plot 2
 		JFreeChart chart2 = ChartFactory.createPieChart("Plot 2 - Total number of births in Zurich in 2015", createDatasetPlot2());
 
-		return new ChartPanel(chart2) {
-
-		};
+		return new ChartPanel(chart2) {};
 	}
 
 	private ChartPanel createPlot3(String area, int from, int to){
+		
+		//check the user's input values and correct invalud values
 		if(from <1993 || from > 2015){
 			from = 1993;
 			System.out.println("The 'from'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 1993");
@@ -343,6 +328,7 @@ public class TabChart {
 			System.out.println("The first entered year has to be lower than the second one. Your chosen years have been reversed.");
 		}
 		
+		//create plot 3
 		JFreeChart chart3 = ChartFactory.createStackedBarChart(
 				"Plot 3 - Total number of births per area in a time interval", 							//chart title
 				"Year of Births",					//domain axis label, x-axis
@@ -353,7 +339,8 @@ public class TabChart {
 				true,								//tooltips
 				false								//URLS
 				);
-
+		
+		//create subcategory axis for years
 		SubCategoryAxis domainAxis = new SubCategoryAxis("Year of Births");
 		domainAxis.setCategoryMargin(0.3);
 		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
@@ -379,7 +366,9 @@ public class TabChart {
 		};
 	}
 
+	//additional methods needed for plot 3
 	private LegendItemCollection createLegendItems() {
+		//create new Legend, legend items, and add them to the legend
 		LegendItemCollection result = new LegendItemCollection();
 		LegendItem item1 = new LegendItem("Male", Color.RED);
 		LegendItem item2 = new LegendItem ("Female", Color.BLUE);
@@ -400,6 +389,7 @@ public class TabChart {
 		double sum = 0;
 		int size = reader.dataGenPlot3(area, from, to).size();
 
+		// Sum( ¦x - mean|^2
 		for(int i = 0; i< size; i++){
 			x = reader.dataGenPlot3(area, from, to).get(i).counterFemale
 					+ reader.dataGenPlot3(area, from, to).get(i).counterMale;
@@ -408,7 +398,9 @@ public class TabChart {
 			y = Math.pow(y, 2);
 			sum = sum + y;
 		}
+		// sum/n
 		stdDev = sum/reader.dataGenPlot3(area, from, to).size();
+		//sqrt(sum)
 		stdDev = Math.sqrt(stdDev);
 		return stdDev;
 	}
@@ -417,20 +409,17 @@ public class TabChart {
 		double median = 0;
 		int counter = 0;
 		int size = reader.dataGenPlot3(area, from, to).size();
-
+		
+		//sum up all the births' per year
 		for(int i = 0; i < size; i++){
 			counter = counter + reader.dataGenPlot3(area, from, to).get(i).counterFemale
 					+ reader.dataGenPlot3(area, from, to).get(i).counterMale;
 		}
-		if(size == 0){
-			size = 1;
-		}
+		//divide sum by number of years
 		median = counter / size;
-
 
 		return median;
 	}
-
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {

@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CSVReader {
-
+	
+	//create data for plot 1
 	public ArrayList<ChartDataObject> dataGenPlot1(){
 		String csvFile = "D:/eclipse/workspace/DataVis_Diagrams/src/res/bevgeburtenjahrgeschlquartstz.csv";
 		String line = "";
@@ -68,7 +69,8 @@ public class CSVReader {
 
 		return returnData;
 	}
-
+	
+	//create data for plot 2
 	public int[] dataGenPlot2(){
 		String csvFile = "D:/eclipse/workspace/DataVis_Diagrams/src/res/bevgeburtenjahrgeschlquartstz.csv";
 		String line = "";
@@ -103,38 +105,16 @@ public class CSVReader {
 		//System.out.println("CSV plot 2 female: " + counter[1]);
 		return counter;
 	}
-
+	
+	//create data for plot 3
 	public ArrayList<ChartDataObject> dataGenPlot3(String area, int from, int to){
 		String csvFile = "D:/eclipse/workspace/DataVis_Diagrams/src/res/bevgeburtenjahrgeschlquartstz.csv";
 		String line = "";
 		String cvsSplitBy = ",";
-		String apo = "\"";
 		int counterYear = -1;
 		int birthyear = 0;
 		int counterMale = 0;
-		int counterFemale = 0;
-
-		//correct input variables if they are not viable
-		//		area.concat(apo);
-		//		apo.concat(area);
-		//		area = apo;
-
-//		if(from <1993 || from > 2015){
-//			from = 1993;
-//			System.out.println("The 'from'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 1993");
-//		}
-//		if(to > 2015 || to < 1993){
-//			to = 2015;
-//			System.out.println("The 'to'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 2015");
-//		}
-//		if(from > to){
-//			int n;
-//			n = from;
-//			from = to;
-//			to = n;
-//			System.out.println("The first entered year has to be lower than the second one. Your chosen years have been reversed.");
-//		}
-		
+		int counterFemale = 0;		
 
 		ArrayList<ChartDataObject> returnData = new ArrayList<ChartDataObject>();
 
@@ -149,9 +129,7 @@ public class CSVReader {
 				if(data.length>1){
 					//check if the area and birthyear are correct
 					if(data[6].equals(area) && Integer.parseInt(data[0]) >= from && Integer.parseInt(data[0]) <= to){
-						//System.out.println(data[6] + data[0]);
-
-
+						
 						//check if new year has to be added
 						if(Integer.parseInt(data[0]) != birthyear){
 							counterYear++;
@@ -182,8 +160,6 @@ public class CSVReader {
 								counterFemale = Integer.parseInt(data[7]);
 								returnData.get(counterYear).counterFemale = returnData.get(counterYear).counterFemale + counterFemale;
 							}
-							//						System.out.println("area: " + returnData.get(counterArea).area + " male: " + returnData.get(counterArea).counterMale
-							//								+ " female: " + returnData.get(counterArea).counterFemale);
 						}
 					}
 				}
@@ -195,7 +171,8 @@ public class CSVReader {
 
 		return returnData;
 	}
-
+	
+	//create data for dropdown menu
 	public ArrayList<String> dataGenDropdown() {
 		ArrayList<String> returnData = new ArrayList<String>();
 		String csvFile = "D:/eclipse/workspace/DataVis_Diagrams/src/res/bevgeburtenjahrgeschlquartstz.csv";
@@ -208,22 +185,17 @@ public class CSVReader {
 			while ((line = br.readLine()) != null) {
 
 				// use comma as separator
-				
 				String[] data = line.split(cvsSplitBy);
 				
-				//there was some weird occurence where the very last parsed line was only containing 1 item...
-				//to prevent an outOfBoundException this if was put here
+				/*there was some weird occurence where the very last parsed line was only containing 1 item...
+				to prevent an outOfBoundException this if construct was put here*/
 				if(data.length>1){
 					if(!data[6].equals(areaName) && data[0].equals("2015")){
 						areaName = data[6];
 						returnData.add(data[6]);
 						//System.out.println("dataGenDropdown areas: " + data[6]);	
 					}
-				
 				}
-				
-				
-
 			}} catch (IOException e) {
 				e.printStackTrace();
 			}
