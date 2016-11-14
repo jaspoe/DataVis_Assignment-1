@@ -18,6 +18,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.SubCategoryAxis;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
 import org.jfree.data.KeyToGroupMap;
@@ -90,6 +91,9 @@ public class TabChart {
 			for(int i = 0; i < data.size(); i++){
 				//add male births'
 				result.addValue(data.get(i).counterMale, "Male", data.get(i).area);
+//				System.out.println("Area: " + data.get(i).area
+//	        						+ " Male: " + data.get(i).counterMale 
+//	        						+ " Female: " + data.get(i).counterFemale);
 				//add female births'
 				result.addValue(data.get(i).counterFemale, "Female", data.get(i).area);
 			}
@@ -132,15 +136,25 @@ public class TabChart {
 				false							//urls
 				);
 			
-		SubCategoryAxis domainAxis = new SubCategoryAxis("Zurich areas");
-        domainAxis.setCategoryMargin(0.05);
+		GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
+        KeyToGroupMap map = new KeyToGroupMap("G1");
+        map.mapKeyToGroup("Female", "G1");
+        map.mapKeyToGroup("Male", "G1");
+        renderer.setSeriesToGroupMap(map);
+		
+		SubCategoryAxis domainAxis = new SubCategoryAxis("Zurich Area");
+        domainAxis.setCategoryMargin(0.3);
         domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+        
+        CategoryPlot plot = (CategoryPlot) chart1.getPlot();
+        plot.setDomainAxis(domainAxis);
+        plot.setRenderer(renderer);
 
 		return new ChartPanel(chart1){
-			@Override
-			public Dimension getPreferredSize(){
-				return new Dimension(480, 240);
-			}
+//			@Override
+//			public Dimension getPreferredSize(){
+//				return new Dimension(480, 240);
+//			}
 		};
 	}
 	
