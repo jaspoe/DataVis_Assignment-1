@@ -121,18 +121,18 @@ public class CSVReader {
 
 		if(from <1993 || from > 2015){
 			from = 1993;
-			System.out.println("The 'from'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 1993");
+			//System.out.println("The 'from'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 1993");
 		}
 		if(to > 2015 || to < 1993){
 			to = 2015;
-			System.out.println("The 'to'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 2015");
+			//System.out.println("The 'to'-number was not valid. Please enter a year between 1993 and 2015. The year has been set to 2015");
 		}
 		if(from > to){
 			int n;
 			n = from;
 			from = to;
 			to = n;
-			System.out.println("The first entered year has to be lower than the second one. Your chosen years have been reversed.");
+			//System.out.println("The first entered year has to be lower than the second one. Your chosen years have been reversed.");
 		}
 		
 
@@ -149,7 +149,7 @@ public class CSVReader {
 				if(data.length>1){
 					//check if the area and birthyear are correct
 					if(data[6].equals(area) && Integer.parseInt(data[0]) >= from && Integer.parseInt(data[0]) <= to){
-						System.out.println(data[6] + data[0]);
+						//System.out.println(data[6] + data[0]);
 
 
 						//check if new year has to be added
@@ -217,7 +217,7 @@ public class CSVReader {
 					if(!data[6].equals(areaName) && data[0].equals("2015")){
 						areaName = data[6];
 						returnData.add(data[6]);
-						System.out.println("dataGenDropdown areas: " + data[6]);	
+						//System.out.println("dataGenDropdown areas: " + data[6]);	
 					}
 				
 				}

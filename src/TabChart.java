@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -16,15 +17,21 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.SubCategoryAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
 import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
@@ -45,9 +52,9 @@ public class TabChart {
 	CSVReader reader = new CSVReader();
 
 	//variables for Plot3 User Selection
-	String plot3SelectedArea;
-	int plot3YearFrom;
-	int plot3YearTo;
+	String plot3SelectedArea = "test";
+	int plot3YearFrom = 1993;
+	int plot3YearTo = 2015;
 
 	public String getPlot3SelectedArea() {
 		return plot3SelectedArea;
@@ -117,11 +124,11 @@ public class TabChart {
 
 		JPanel jPanel3 = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		ChartPanel plot3 = createPlot3("\"Rathaus\"", 1993, 2015);
-		//TODO: add 2 Text fields,  and 1 ok button
 
 		/** create Dropdown Menu
 		 * 	populate Menu
 		 * 	create Action Listener
+		 * 	add to pane
 		 */
 		String[] dropDownArray = new String[reader.dataGenDropdown().size()];
 		for(int i = 0; i < reader.dataGenDropdown().size(); i++){
@@ -131,24 +138,70 @@ public class TabChart {
 		ActionListener comboBoxListener = new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
+
+				jPanel3.remove(3);
 				setPlot3SelectedArea((String) comboBox.getSelectedItem());
+				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
+				jPanel3.updateUI();
+				//System.out.println("If you have not selected any year range, then the range of 1993 to 2015 will be automatically selected.");
 			}
 		};
 		comboBox.addActionListener(comboBoxListener);
 		jPanel3.add(comboBox);
-		
-		
+
+		/** create From  And To TextBox
+		 * 	create Action Listener
+		 * 	add to pane
+		 */
 		//TODO: check the input fields for correct inputs have to be int!
-		JFormattedTextField textfield = new JFormattedTextField();
-		jPanel3.add(new JButton(new AbstractAction("Create Plot"){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				//TODO: change the item to remove!
-				jPanel3.remove(2);
-				jPanel3.add(createPlot3("Test", 2015, 2015));
-				jPanel1.updateUI();
+		JTextField yearFromTextField = new JTextField();
+		yearFromTextField.setToolTipText("Start Year of Data Range");
+		yearFromTextField.setColumns(5);
+		yearFromTextField.getDocument().addDocumentListener(new DocumentListener(){
+			public void changedUpdate(DocumentEvent e){
+				updatePlot();
 			}
-		}));
+			public void removeUpdate(DocumentEvent e){
+				updatePlot();
+			}
+			public void insertUpdate(DocumentEvent e){
+				updatePlot();
+			}
+			public void updatePlot(){
+				int year = Integer.parseInt(yearFromTextField.getText());
+				jPanel3.remove(3);
+				setPlot3YearFrom(year);
+				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
+				jPanel3.updateUI();
+				//System.out.println("If you have not selected a second year, then the To-year will be automatically set to 2015" );
+			}
+		});
+		jPanel3.add(yearFromTextField);
+
+		JTextField yearToTextField = new JTextField();
+		yearToTextField.setToolTipText("End Year of Data Range");
+		yearToTextField.setColumns(5);
+		yearToTextField.getDocument().addDocumentListener(new DocumentListener(){
+
+			public void changedUpdate(DocumentEvent e){
+				updatePlot();
+			}
+			public void removeUpdate(DocumentEvent e){
+				updatePlot();
+			}
+			public void insertUpdate(DocumentEvent e){
+				updatePlot();
+			}
+			public void updatePlot(){
+				int year = Integer.parseInt(yearToTextField.getText());
+				jPanel3.remove(3);
+				setPlot3YearTo(year);
+				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
+				jPanel3.updateUI();
+				//System.out.println("If you have not selected a second year, then the From-year will be automatically set to 1993" );
+			}
+		});
+		jPanel3.add(yearToTextField);
 
 		jPanel3.add(plot3);
 		jtp.add("Plot 3", jPanel3);
@@ -219,7 +272,7 @@ public class TabChart {
 				"Plot 1", 						//chart title
 				"Zurich Areas", 				//domain axis label x-axis
 				"Number of Births", 			//range axis label y-axis
-				createDatasetPlot1(gender), 			//data
+				createDatasetPlot1(gender), 	//data
 				PlotOrientation.VERTICAL,		//plot orientation
 				true,							//legend
 				true,							//tooltips
@@ -234,10 +287,7 @@ public class TabChart {
 		plot.setDomainAxis(domainAxis);
 
 		return new ChartPanel(chart1){
-			//			@Override
-			//			public Dimension getPreferredSize(){
-			//				return new Dimension(480, 240);
-			//			}
+
 		};
 	}
 
@@ -271,12 +321,72 @@ public class TabChart {
 		CategoryPlot plot = (CategoryPlot) chart3.getPlot();
 		plot.setDomainAxis(domainAxis);
 
+		//create Median Line
+		double plot3Median = calculateMedian(area, from, to);
+		ValueMarker median = new ValueMarker(plot3Median);
+		median.setPaint(Color.cyan);
+		plot.addRangeMarker(median);
+
+		//create Standard Deviation Line
+		double plot3StdDev = calculateStdDev(area, from, to);
+		ValueMarker stdDev = new ValueMarker(plot3StdDev);
+		stdDev.setPaint(Color.GREEN);
+		plot.addRangeMarker(stdDev);
+
+		//create  and set Legend
+		plot.setFixedLegendItems(createLegendItems());
 		return new ChartPanel(chart3){
-			//			@Override
-			//			public Dimension getPreferredSize(){
-			//				return new Dimension(480, 240);
-			//			}
 		};
+	}
+
+	private LegendItemCollection createLegendItems() {
+		LegendItemCollection result = new LegendItemCollection();
+		LegendItem item1 = new LegendItem("Male", Color.RED);
+		LegendItem item2 = new LegendItem ("Female", Color.BLUE);
+		LegendItem item3 = new LegendItem ("Median", Color.CYAN);
+		LegendItem item4 = new LegendItem ("Standard Deviation", Color.GREEN);
+		result.add(item1);
+		result.add(item2);
+		result.add(item3);
+		result.add(item4);
+		return result;
+	}
+
+	private double calculateStdDev(String area, int from, int to){
+		double stdDev = 0;
+		double mean = calculateMedian(area, from, to);
+		double x = 0;
+		double y = 0;
+		double sum = 0;
+
+		for(int i = 0; i< reader.dataGenPlot3(area, from, to).size(); i++){
+			x = reader.dataGenPlot3(area, from, to).get(i).counterFemale
+					+ reader.dataGenPlot3(area, from, to).get(i).counterMale;
+			y = x - mean;
+			System.out.println(x + " - " + mean + " = " + y);
+			y = Math.abs(y);
+			y = Math.pow(y, 2);
+			sum = sum + y;
+		}
+		stdDev = sum/reader.dataGenPlot3(area, from, to).size();
+		System.out.println("Standard Deviation: " + stdDev);
+		stdDev = Math.sqrt(stdDev);
+		return stdDev;
+	}
+
+	private double calculateMedian(String area, int from, int to){
+		double median = 0;
+		int counter = 0;
+
+		for(int i = 0; i < reader.dataGenPlot3(area, from, to).size(); i++){
+			counter = counter + reader.dataGenPlot3(area, from, to).get(i).counterFemale
+					+ reader.dataGenPlot3(area, from, to).get(i).counterMale;
+		}
+
+		median = counter / reader.dataGenPlot3(area, from, to).size();
+
+
+		return median;
 	}
 
 
