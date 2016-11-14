@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -40,43 +41,74 @@ public class TabChart {
 		JFrame f = new JFrame("TabChart");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		final JTabbedPane jtp = new JTabbedPane();
-		jtp.add("Plot 1", createPlot1());
+		
+		JPanel test = new JPanel(new FlowLayout(FlowLayout.LEADING));
+		ChartPanel plot1 = createPlot1(0);
+		test.add(new JButton(new AbstractAction("Female"){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				test.remove(test.getComponent(3));
+				test.add(createPlot1(2));
+				test.updateUI();
+			}
+		}));
+		test.add(new JButton(new AbstractAction("Male"){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				test.remove(test.getComponent(3));
+				test.add(createPlot1(1));
+				test.updateUI();
+			}
+		}));
+		test.add(new JButton(new AbstractAction("Both"){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				test.remove(test.getComponent(3));
+				test.add(createPlot1(0));
+				test.updateUI();
+			}
+		}));
+		
+		test.add(plot1);	
+		jtp.addTab("Plot 1", test);
+		
+		
 		jtp.add("Plot 2", createPlot2());
 		f.add(jtp, BorderLayout.CENTER);
-//		        JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-//		        p.add(new JButton(new AbstractAction("Add") {
-//		            @Override
-//		            public void actionPerformed(ActionEvent e) {
-//		                jtp.add(String.valueOf(++n), createPlot1());
-//		                jtp.setSelectedIndex(n - 1);
-//		            }
-//		        }));
-//		        f.add(p, BorderLayout.SOUTH);
-
-		JPanel test = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JCheckBox maleCheckbox = new JCheckBox("Male");
-		JCheckBox femaleCheckbox = new JCheckBox("Female");
-		test.add(createPlot1());
-		test.add(maleCheckbox);
-		test.add(femaleCheckbox);
 		
-		jtp.addTab("test", test);
 		f.pack();
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
 	}
 
-	private CategoryDataset createDatasetPlot1(){
+	private CategoryDataset createDatasetPlot1(int gender){
 		CSVReader reader = new CSVReader();
 		ArrayList<Plot1DataObject> data = reader.dataGenPlot1();
 		DefaultCategoryDataset result = new DefaultCategoryDataset();
-		for(int i = 0; i < data.size(); i++){
-			//add male births'
-			result.addValue(data.get(i).counterMale, "Male", data.get(i).area);
-			//add female births'
-			result.addValue(data.get(i).counterFemale, "Female", data.get(i).area);
+		
+		if(gender == 0){
+			for(int i = 0; i < data.size(); i++){
+				//add male births'
+				result.addValue(data.get(i).counterMale, "Male", data.get(i).area);
+				//add female births'
+				result.addValue(data.get(i).counterFemale, "Female", data.get(i).area);
+			}
+			return result;
 		}
-		return result;
+		else if(gender ==1){
+			for(int i = 0; i<data.size(); i++){
+				result.addValue(data.get(i).counterMale, "Male", data.get(i).area);
+			}
+			return result;
+		}
+		else{
+			for(int i = 0; i<data.size(); i++){
+				result.addValue(data.get(i).counterFemale, "Female", data.get(i).area);
+			}
+			return result;
+		}
+		
+		
 	}
 	
 	private PieDataset createDatasetPlot2(){
@@ -88,24 +120,18 @@ public class TabChart {
 		return result;
 	}
 
-	private ChartPanel createPlot1(){
+	private ChartPanel createPlot1(int gender){
 		JFreeChart chart1 = ChartFactory.createStackedBarChart(
 				"Plot 1", 						//chart title
 				"Zurich Areas", 				//domain axis label x-axis
 				"Number of Births", 			//range axis label y-axis
-				createDatasetPlot1(), 			//data
+				createDatasetPlot1(gender), 			//data
 				PlotOrientation.VERTICAL,		//plot orientation
 				true,							//legend
 				true,							//tooltips
 				false							//urls
 				);
-		
-//		GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
-//        KeyToGroupMap map = new KeyToGroupMap("G1");
-//        map.mapKeyToGroup("Female", "G1");
-//        map.mapKeyToGroup("Male", "G1");
-//        renderer.setSeriesToGroupMap(map); 
-		
+			
 		SubCategoryAxis domainAxis = new SubCategoryAxis("Zurich areas");
         domainAxis.setCategoryMargin(0.05);
         domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
