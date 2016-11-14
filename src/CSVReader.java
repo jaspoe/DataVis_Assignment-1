@@ -134,6 +134,7 @@ public class CSVReader {
 			to = n;
 			System.out.println("The first entered year has to be lower than the second one. Your chosen years have been reversed.");
 		}
+		
 
 		ArrayList<ChartDataObject> returnData = new ArrayList<ChartDataObject>();
 

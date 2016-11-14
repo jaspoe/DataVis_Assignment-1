@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.AbstractAction;
@@ -15,6 +16,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -40,6 +43,38 @@ public class TabChart {
 	private static final Random random = new Random();
 	private int n = 1;
 	CSVReader reader = new CSVReader();
+
+	//variables for Plot3 User Selection
+	String plot3SelectedArea;
+	int plot3YearFrom;
+	int plot3YearTo;
+
+	public String getPlot3SelectedArea() {
+		return plot3SelectedArea;
+	}
+
+	public void setPlot3SelectedArea(String plot3SelectedArea) {
+		this.plot3SelectedArea = plot3SelectedArea;
+	}
+
+	public int getPlot3YearFrom() {
+		return plot3YearFrom;
+	}
+
+	public void setPlot3YearFrom(int plot3YearFrom) {
+		this.plot3YearFrom = plot3YearFrom;
+	}
+
+	public int getPlot3YearTo() {
+		return plot3YearTo;
+	}
+
+	public void setPlot3YearTo(int plot3YearTo) {
+		this.plot3YearTo = plot3YearTo;
+	}
+
+
+	// setters and getters for varialbe Plot3 User Selection
 
 	private void display() {
 		JFrame f = new JFrame("TabChart");
@@ -79,35 +114,50 @@ public class TabChart {
 
 		jtp.add("Plot 2", createPlot2());
 		f.add(jtp, BorderLayout.CENTER);
-		
+
 		JPanel jPanel3 = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		ChartPanel plot3 = createPlot3("\"Rathaus\"", 1993, 2015);
 		//TODO: add 2 Text fields,  and 1 ok button
+
+		/** create Dropdown Menu
+		 * 	populate Menu
+		 * 	create Action Listener
+		 */
 		String[] dropDownArray = new String[reader.dataGenDropdown().size()];
 		for(int i = 0; i < reader.dataGenDropdown().size(); i++){
 			dropDownArray[i] = reader.dataGenDropdown().get(i);
 		}
-		jPanel3.add(new JComboBox(dropDownArray));
+		JComboBox comboBox = new JComboBox(dropDownArray);
+		ActionListener comboBoxListener = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				setPlot3SelectedArea((String) comboBox.getSelectedItem());
+			}
+		};
+		comboBox.addActionListener(comboBoxListener);
+		jPanel3.add(comboBox);
+		
+		
 		//TODO: check the input fields for correct inputs have to be int!
 		JFormattedTextField textfield = new JFormattedTextField();
-		
 		jPanel3.add(new JButton(new AbstractAction("Create Plot"){
 			@Override
 			public void actionPerformed(ActionEvent e){
-//				String[] plot3UserData = getPlot3UserData();
-//				jPanel3.remove(4);
-//				plot3 = createPlot3(plot3UserData[0], Integer.parseInt(plot3UserData[1]), Integer.parseInt(plot3UserData[2]));
-//				jPanel1.updateUI();
+				//TODO: change the item to remove!
+				jPanel3.remove(2);
+				jPanel3.add(createPlot3("Test", 2015, 2015));
+				jPanel1.updateUI();
 			}
 		}));
-		
+
 		jPanel3.add(plot3);
 		jtp.add("Plot 3", jPanel3);
-		
+
 		f.pack();
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
 	}
+
 
 	private CategoryDataset createDatasetPlot1(int gender){
 		CSVReader reader = new CSVReader();
@@ -213,7 +263,7 @@ public class TabChart {
 				true,								//tooltips
 				false								//URLS
 				);
-		
+
 		SubCategoryAxis domainAxis = new SubCategoryAxis("Year of Births");
 		domainAxis.setCategoryMargin(0.3);
 		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
@@ -234,6 +284,7 @@ public class TabChart {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				UIManager.put("swing.boldMetal", Boolean.FALSE);
 				new TabChart().display();
 			}
 		});
