@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -36,11 +39,11 @@ public class TabChart {
 
 	//initiate variables
 	CSVReader reader = new CSVReader();
-	
+
 	//variables for Plot1 User Selection
 	Boolean checkboxMale = false;
 	Boolean checkboxFemale = false;
-	
+
 	//getters and setters for Plot 1 User Selection
 	public Boolean getCheckboxMale() {
 		return checkboxMale;
@@ -58,7 +61,7 @@ public class TabChart {
 		this.checkboxFemale = checkboxFemale;
 	}
 
-	
+
 
 	//variables for Plot3 User Selection
 	String plot3SelectedArea = "\"Rathaus\"";
@@ -101,31 +104,31 @@ public class TabChart {
 		JPanel jPanel1 = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		ChartPanel plot1 = createPlot1(0);
 		//add Buttons for gender selection
-//		jPanel1.add(new JButton(new AbstractAction("Female"){
-//			@Override
-//			public void actionPerformed(ActionEvent e){
-//				jPanel1.remove(jPanel1.getComponent(3));
-//				jPanel1.add(createPlot1(2));
-//				jPanel1.updateUI();
-//			}
-//		}));
-//		jPanel1.add(new JButton(new AbstractAction("Male"){
-//			@Override
-//			public void actionPerformed(ActionEvent e){
-//				jPanel1.remove(jPanel1.getComponent(3));
-//				jPanel1.add(createPlot1(1));
-//				jPanel1.updateUI();
-//			}
-//		}));
-//		jPanel1.add(new JButton(new AbstractAction("Both"){
-//			@Override
-//			public void actionPerformed(ActionEvent e){
-//				jPanel1.remove(jPanel1.getComponent(3));
-//				jPanel1.add(createPlot1(0));
-//				jPanel1.updateUI();
-//			}
-//		}));
-		
+		//		jPanel1.add(new JButton(new AbstractAction("Female"){
+		//			@Override
+		//			public void actionPerformed(ActionEvent e){
+		//				jPanel1.remove(jPanel1.getComponent(3));
+		//				jPanel1.add(createPlot1(2));
+		//				jPanel1.updateUI();
+		//			}
+		//		}));
+		//		jPanel1.add(new JButton(new AbstractAction("Male"){
+		//			@Override
+		//			public void actionPerformed(ActionEvent e){
+		//				jPanel1.remove(jPanel1.getComponent(3));
+		//				jPanel1.add(createPlot1(1));
+		//				jPanel1.updateUI();
+		//			}
+		//		}));
+		//		jPanel1.add(new JButton(new AbstractAction("Both"){
+		//			@Override
+		//			public void actionPerformed(ActionEvent e){
+		//				jPanel1.remove(jPanel1.getComponent(3));
+		//				jPanel1.add(createPlot1(0));
+		//				jPanel1.updateUI();
+		//			}
+		//		}));
+
 		Checkbox checkboxMale = new Checkbox();
 		checkboxMale.setLabel("Male");
 		ItemListener maleCheckboxListener = new ItemListener(){
@@ -139,7 +142,7 @@ public class TabChart {
 		};
 		checkboxMale.addItemListener(maleCheckboxListener);
 		jPanel1.add(checkboxMale);
-		
+
 		Checkbox checkboxFemale = new Checkbox();
 		checkboxFemale.setLabel("Female");
 		ItemListener femaleCheckboxListener = new ItemListener(){
@@ -153,7 +156,7 @@ public class TabChart {
 		};
 		checkboxFemale.addItemListener(femaleCheckboxListener);
 		jPanel1.add(checkboxFemale);
-		
+
 
 		jPanel1.add(plot1);	
 		jtp.addTab("Plot 1", jPanel1);
@@ -189,17 +192,30 @@ public class TabChart {
 		comboBox.addActionListener(comboBoxListener);
 		jPanel3.add(comboBox);
 
-		/*  create From  And To TextBox
-		 * 	create Action Listener
-		 * 	add to pane
-		 */
+		//create textfield ToYear, add Document Listener to it
 		JTextField yearToTextField = new JTextField();
 		yearToTextField.setToolTipText("Start Year of Data Range - bigger number");
 		yearToTextField.setColumns(5);
-		
-		ActionListener yearToListener = new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
+
+		//create Document Listener that updates the chart everytime a new 4 digit number is entered
+		DocumentListener yearToListener = new DocumentListener(){
+			public void changedUpdate(DocumentEvent e){
+				checkInput();
+			}
+			public void removeUpdate(DocumentEvent e){
+				checkInput();
+			}
+			public void insertUpdate(DocumentEvent e){
+				checkInput();
+			}
+			public void checkInput(){
+				int length = yearToTextField.getText().length();
+				if(length == 4){
+					updatePlot();
+				}
+			}
+
+			public void updatePlot(){
 				int year = Integer.parseInt(yearToTextField.getText());
 				jPanel3.remove(3);
 				setPlot3YearTo(year);
@@ -207,37 +223,33 @@ public class TabChart {
 				jPanel3.updateUI();
 			}
 		};
-		yearToTextField.addActionListener(yearToListener);
-		
-		/**This code updates the text field at every digit enter. takes way to long to calculate and leads to errors*/
-		/*yearToTextField.getDocument().addDocumentListener(new DocumentListener(){
-
-			public void changedUpdate(DocumentEvent e){
-				updatePlot();
-			}
-			public void removeUpdate(DocumentEvent e){
-				updatePlot();
-			}
-			public void insertUpdate(DocumentEvent e){
-				updatePlot();
-			}
-			public void updatePlot(){
-				int year = Integer.parseInt(yearToTextField.getText());
-				jPanel3.remove(3);
-				setPlot3YearTo(year);
-				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
-				jPanel3.updateUI();
-				//System.out.println("If you have not selected a second year, then the From-year will be automatically set to 1993" );
-			}
-		});*/
+		yearToTextField.getDocument().addDocumentListener(yearToListener);
 		jPanel3.add(yearToTextField);
 
+		//create textfield ToYear, add Document Listener to it
 		JTextField yearFromTextField = new JTextField();
 		yearFromTextField.setToolTipText("End Year of Data Range - smaller number");
 		yearFromTextField.setColumns(5);
-		ActionListener yearFromListener = new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
+
+		//create Document Listener that updates the chart everytime a new 4 digit number is entered
+		DocumentListener yearFromListener = new DocumentListener(){
+			public void changedUpdate(DocumentEvent e){
+				checkInput();
+			}
+			public void removeUpdate(DocumentEvent e){
+				checkInput();
+			}
+			public void insertUpdate(DocumentEvent e){
+				checkInput();
+			}
+			public void checkInput(){
+				int length = yearFromTextField.getText().length();
+				if(length == 4){
+					updatePlot();
+				}
+			}
+
+			public void updatePlot(){
 				int year = Integer.parseInt(yearFromTextField.getText());
 				jPanel3.remove(3);
 				setPlot3YearFrom(year);
@@ -245,34 +257,13 @@ public class TabChart {
 				jPanel3.updateUI();
 			}
 		};
-		yearFromTextField.addActionListener(yearFromListener);
+		yearFromTextField.getDocument().addDocumentListener(yearFromListener);
 
-		/**This code updates the text field at every digit enter. takes way to long to calculate and leads to errors*/
-
-		/*yearFromTextField.getDocument().addDocumentListener(new DocumentListener(){
-			public void changedUpdate(DocumentEvent e){
-				updatePlot();
-			}
-			public void removeUpdate(DocumentEvent e){
-				updatePlot();
-			}
-			public void insertUpdate(DocumentEvent e){
-				updatePlot();
-			}
-			public void updatePlot(){
-				int year = Integer.parseInt(yearFromTextField.getText());
-				jPanel3.remove(3);
-				setPlot3YearFrom(year);
-				jPanel3.add(createPlot3(getPlot3SelectedArea(), getPlot3YearFrom(), getPlot3YearTo()));
-				jPanel3.updateUI();
-				//System.out.println("If you have not selected a second year, then the To-year will be automatically set to 2015" );
-			}
-		});*/
 		jPanel3.add(yearFromTextField);
 
 		jPanel3.add(plot3);
 		jtp.add("Plot 3", jPanel3);
-		
+
 		//finish the GUI
 		f.pack();
 		f.setLocationRelativeTo(null);
@@ -361,7 +352,7 @@ public class TabChart {
 				false							//urls
 				);
 
-		
+
 		//create subcategory axis for areas
 		SubCategoryAxis domainAxis = new SubCategoryAxis("Zurich Area");
 		domainAxis.setCategoryMargin(0.3);
@@ -381,7 +372,7 @@ public class TabChart {
 	}
 
 	private ChartPanel createPlot3(String area, int from, int to){
-		
+
 		//check the user's input values and correct invalud values
 		if(from <1993 || from > 2015){
 			from = 1993;
@@ -398,7 +389,7 @@ public class TabChart {
 			to = n;
 			System.out.println("The first entered year has to be lower than the second one. Your chosen years have been reversed.");
 		}
-		
+
 		//create plot 3
 		JFreeChart chart3 = ChartFactory.createStackedBarChart(
 				"Plot 3 - Total number of births per area in a time interval", 							//chart title
@@ -410,7 +401,7 @@ public class TabChart {
 				true,								//tooltips
 				false								//URLS
 				);
-		
+
 		//create subcategory axis for years
 		SubCategoryAxis domainAxis = new SubCategoryAxis("Year of Births");
 		domainAxis.setCategoryMargin(0.3);
@@ -480,7 +471,7 @@ public class TabChart {
 		double median = 0;
 		int counter = 0;
 		int size = reader.dataGenPlot3(area, from, to).size();
-		
+
 		//sum up all the births' per year
 		for(int i = 0; i < size; i++){
 			counter = counter + reader.dataGenPlot3(area, from, to).get(i).counterFemale
