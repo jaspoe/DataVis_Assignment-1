@@ -1,9 +1,13 @@
 import java.awt.BorderLayout;
+import java.awt.Checkbox;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -32,6 +36,29 @@ public class TabChart {
 
 	//initiate variables
 	CSVReader reader = new CSVReader();
+	
+	//variables for Plot1 User Selection
+	Boolean checkboxMale = false;
+	Boolean checkboxFemale = false;
+	
+	//getters and setters for Plot 1 User Selection
+	public Boolean getCheckboxMale() {
+		return checkboxMale;
+	}
+
+	public void setCheckboxMale(Boolean checkboxMale) {
+		this.checkboxMale = checkboxMale;
+	}
+
+	public Boolean getCheckboxFemale() {
+		return checkboxFemale;
+	}
+
+	public void setCheckboxFemale(Boolean checkboxFemale) {
+		this.checkboxFemale = checkboxFemale;
+	}
+
+	
 
 	//variables for Plot3 User Selection
 	String plot3SelectedArea = "\"Rathaus\"";
@@ -74,30 +101,59 @@ public class TabChart {
 		JPanel jPanel1 = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		ChartPanel plot1 = createPlot1(0);
 		//add Buttons for gender selection
-		jPanel1.add(new JButton(new AbstractAction("Female"){
+//		jPanel1.add(new JButton(new AbstractAction("Female"){
+//			@Override
+//			public void actionPerformed(ActionEvent e){
+//				jPanel1.remove(jPanel1.getComponent(3));
+//				jPanel1.add(createPlot1(2));
+//				jPanel1.updateUI();
+//			}
+//		}));
+//		jPanel1.add(new JButton(new AbstractAction("Male"){
+//			@Override
+//			public void actionPerformed(ActionEvent e){
+//				jPanel1.remove(jPanel1.getComponent(3));
+//				jPanel1.add(createPlot1(1));
+//				jPanel1.updateUI();
+//			}
+//		}));
+//		jPanel1.add(new JButton(new AbstractAction("Both"){
+//			@Override
+//			public void actionPerformed(ActionEvent e){
+//				jPanel1.remove(jPanel1.getComponent(3));
+//				jPanel1.add(createPlot1(0));
+//				jPanel1.updateUI();
+//			}
+//		}));
+		
+		Checkbox checkboxMale = new Checkbox();
+		checkboxMale.setLabel("Male");
+		ItemListener maleCheckboxListener = new ItemListener(){
 			@Override
-			public void actionPerformed(ActionEvent e){
-				jPanel1.remove(jPanel1.getComponent(3));
-				jPanel1.add(createPlot1(2));
+			public void itemStateChanged(ItemEvent e){
+				setCheckboxMale(checkboxMale.getState());
+				jPanel1.remove(jPanel1.getComponent(2));
+				jPanel1.add(createPlot1(selectGender()));
 				jPanel1.updateUI();
 			}
-		}));
-		jPanel1.add(new JButton(new AbstractAction("Male"){
+		};
+		checkboxMale.addItemListener(maleCheckboxListener);
+		jPanel1.add(checkboxMale);
+		
+		Checkbox checkboxFemale = new Checkbox();
+		checkboxFemale.setLabel("Female");
+		ItemListener femaleCheckboxListener = new ItemListener(){
 			@Override
-			public void actionPerformed(ActionEvent e){
-				jPanel1.remove(jPanel1.getComponent(3));
-				jPanel1.add(createPlot1(1));
+			public void itemStateChanged(ItemEvent e){
+				setCheckboxFemale(checkboxFemale.getState());
+				jPanel1.remove(jPanel1.getComponent(2));
+				jPanel1.add(createPlot1(selectGender()));
 				jPanel1.updateUI();
 			}
-		}));
-		jPanel1.add(new JButton(new AbstractAction("Both"){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				jPanel1.remove(jPanel1.getComponent(3));
-				jPanel1.add(createPlot1(0));
-				jPanel1.updateUI();
-			}
-		}));
+		};
+		checkboxFemale.addItemListener(femaleCheckboxListener);
+		jPanel1.add(checkboxFemale);
+		
 
 		jPanel1.add(plot1);	
 		jtp.addTab("Plot 1", jPanel1);
@@ -152,7 +208,7 @@ public class TabChart {
 			}
 		};
 		yearToTextField.addActionListener(yearToListener);
-
+		
 		/**This code updates the text field at every digit enter. takes way to long to calculate and leads to errors*/
 		/*yearToTextField.getDocument().addDocumentListener(new DocumentListener(){
 
@@ -221,6 +277,21 @@ public class TabChart {
 		f.pack();
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
+	}
+
+	private int selectGender() {
+		if(getCheckboxMale() == true && getCheckboxFemale() == true){
+			return 0;
+		}else if(getCheckboxMale() == true && getCheckboxFemale() == false){
+			return 1;
+		}
+		else if(getCheckboxMale() == false && getCheckboxFemale() == true){
+			return 2;
+		}
+		else{
+			System.out.println("You did not select any data to display. The data to display has been automatically set to both gender.");
+			return 0;
+		}
 	}
 
 	//create Datasets for the different Plots and menus

@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CSVReader {
-	
+	String csvFile = "src/res/bevgeburtenjahrgeschlquartstz.csv";
+	String line = "";
+	String cvsSplitBy = ",";
 	//create data for plot 1
 	public ArrayList<ChartDataObject> dataGenPlot1(){
-		String csvFile = "D:/eclipse/workspace/DataVis_Diagrams/src/res/bevgeburtenjahrgeschlquartstz.csv";
-		String line = "";
-		String cvsSplitBy = ",";
 		int counterArea = -1;
 		int counterMale = 0;
 		int counterFemale = 0;
@@ -72,9 +71,6 @@ public class CSVReader {
 	
 	//create data for plot 2
 	public int[] dataGenPlot2(){
-		String csvFile = "D:/eclipse/workspace/DataVis_Diagrams/src/res/bevgeburtenjahrgeschlquartstz.csv";
-		String line = "";
-		String cvsSplitBy = ",";
 		int counterFemale = 0;
 		int counterMale = 0;
 		int[] counter = new int[2];
@@ -108,9 +104,6 @@ public class CSVReader {
 	
 	//create data for plot 3
 	public ArrayList<ChartDataObject> dataGenPlot3(String area, int from, int to){
-		String csvFile = "D:/eclipse/workspace/DataVis_Diagrams/src/res/bevgeburtenjahrgeschlquartstz.csv";
-		String line = "";
-		String cvsSplitBy = ",";
 		int counterYear = -1;
 		int birthyear = 0;
 		int counterMale = 0;
@@ -175,9 +168,6 @@ public class CSVReader {
 	//create data for dropdown menu
 	public ArrayList<String> dataGenDropdown() {
 		ArrayList<String> returnData = new ArrayList<String>();
-		String csvFile = "D:/eclipse/workspace/DataVis_Diagrams/src/res/bevgeburtenjahrgeschlquartstz.csv";
-		String line = "";
-		String cvsSplitBy = ",";
 		String areaName = "";
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
